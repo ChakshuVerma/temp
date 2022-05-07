@@ -1,0 +1,229 @@
+===========Pract1
+
+setwd("E:\\E_Backup_20.7.2020\\BSc(H)CS\\Data_Mining\\Rprograms")
+datafile <- file.choose()         
+peoplefile <- read.table(datafile,header=TRUE,sep=",")
+peoplefile  #display entire table
+edit(peoplefile)
+install.packages("sqldf")
+library(sqldf)
+
+#RULE SET 1
+peoplefile
+query1 <- "SELECT
+                            AGE,
+                            AGEGROUP,
+                            HEIGHT,
+                            STATUS,
+                            YEARSMARRIED
+                        FROM
+                            peoplefile
+                        WHERE
+                            AGE >=0 AND AGE <=150"
+sqldf(query1)
+#RULE SET 2
+query2 <- "SELECT
+                    AGE,
+                    AGEGROUP,
+                    HEIGHT,
+                    STATUS,
+                    YEARSMARRIED
+                FROM
+                    peoplefile
+                WHERE
+                    AGE > YEARSMARRIED"
+sqldf(query2)
+#RULE SET 3
+query3 <- "SELECT
+                  AGE,
+                  AGEGROUP,
+                  HEIGHT,
+                  STATUS,
+                  YEARSMARRIED
+              FROM
+                  peoplefile
+              WHERE
+                      STATUS='married' OR STATUS='single'OR STATUS='widowed' "
+sqldf(query3)
+#RULE SET 4
+query4 <- "SELECT
+                AGE,
+                AGEGROUP,
+                HEIGHT,
+                STATUS,
+                YEARSMARRIED
+          FROM
+                peoplefile
+          WHERE
+                AGE < 18 AND AGEGROUP = 'child' OR
+                AGE BETWEEN 18 AND 65 AND AGEGROUP = 'adult' OR 
+                AGE > 65 AND AGEGROUP = 'elderly' "
+sqldf(query4)
+peoplefile
+
+# Summary Statistics on peoplefile dataset
+#mean
+mean(peoplefile$Age,na.rm = TRUE)
+mean(peoplefile$HEIGHT,na.rm = TRUE) 
+mean(peoplefile$YEARSMARRIED,na.rm = TRUE) 
+
+#median
+median(peoplefile$AGE,na.rm = TRUE)
+median(peoplefile$HEIGHT,na.rm = TRUE) 
+median(peoplefile$YEARSMARRIED,na.rm = TRUE) 
+
+#variance
+var(peoplefile$AGE,na.rm = TRUE)
+var(peoplefile$HEIGHT,na.rm = TRUE) 
+var(peoplefile$YEARSMARRIED,na.rm = TRUE) 
+
+
+
+#standard deviation
+sd(peoplefile$AGE,na.rm = TRUE)
+sd(peoplefile$HEIGHT,na.rm = TRUE) 
+sd(peoplefile$YEARSMARRIED,na.rm = TRUE) 
+
+
+#Mean Absolute Difference
+mad(peoplefile$AGE,na.rm = TRUE)
+mad(peoplefile$HEIGHT,na.rm = TRUE) 
+mad(peoplefile$YEARSMARRIED,na.rm = TRUE) 
+
+
+#Minimun and Maximum
+min(peoplefile$AGE,na.rm = TRUE)
+min(peoplefile$HEIGHT,na.rm = TRUE) 
+min(peoplefile$YEARSMARRIED,na.rm = TRUE) 
+
+max(peoplefile$AGE,na.rm = TRUE)
+max(peoplefile$HEIGHT,na.rm = TRUE) 
+max(peoplefile$YEARSMARRIED,na.rm = TRUE) 
+
+
+#Quanties
+quantile(peoplefile$AGE,na.rm = TRUE)
+quantile(peoplefile$HEIGHT,na.rm = TRUE) 
+quantile(peoplefile$YEARSMARRIED,na.rm = TRUE) 
+
+IQR(peoplefile$AGE,na.rm = TRUE)
+IQR(peoplefile$HEIGHT,na.rm = TRUE) 
+IQR(peoplefile$YEARSMARRIED,na.rm = TRUE) 
+
+#Five number Summary
+fivenum(peoplefile$AGE,na.rm = TRUE)
+fivenum(peoplefile$HEIGHT,na.rm = TRUE) 
+fivenum(peoplefile$YEARSMARRIED,na.rm = TRUE) 
+
+
+# Dataset Summary
+summary(peoplefile)
+
+
+#________________________PLOTTING______________________
+#SCATTER PLOTS
+peolplefile
+
+with(peoplefile,plot(AGE,HEIGHT, main="Age versus Height" , xlab="Age", 
+                        ylab="Height", col= "blue", pch=18, log="xy"))
+
+
+==============Pract2:
+
+dirty_iris<-read.csv("dirty_iris")
+dirty_iris
+
+c<-sum(complete.cases(dirty_iris))
+cat("Number of complete observations: ", c, "\n")
+cat("% of complete observations: ", c/(dim(dirty_iris)[1]*100, "\n\n")
+
+replace<-function(x){
+for(i in 1:length(x)){
+if(is.infinite(x[i]) | is.nan(x[i]))
+x[i] = NA
+}
+x
+}
+for(i in 1:length(dirty_iris)){
+dirty_iris[,i] = replace(dirty_iris[,i])
+}
+dirty_iris
+
+library(editrules)
+E<-editfile("editQ2.txt")
+E
+
+=========Pract 3:
+
+wine<-as.data.frame(read.csv("wine.csv", header=FALSE))
+colnames(wine)=c("Category, "Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total Phenols", "Flavanoids", "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline")
+wine
+
+flag<-1
+j<-1
+for(j in 1:length(wine)){
+if(mean(wine[,j])!=0 || sd(wine[,j]!=1){
+flag<-0}
+j<-j+1}
+if(flag==1){cat("Dataset is normalized"}
+if(flag==0){cat("Dataset is not normalized", "\n")
+cat("Normalizing", "\n")
+data_std<-function(x){(x-mean(x))/sd(x)}
+}
+wine1<-data.frame(sapply(wine, data_std))
+i<-1
+for(i in 1:length(wine1)){
+cat("Mean of ", names(wine1[i]), "is ", as.integer(mean(wine1[,i])), " and Standard Dev is ", as.integer(sd(wine1[,i])))
+i = i+1
+}
+cat("Dataset is normalized now")
+
+===========Pract4: (Apriori)
+
+library(arules)
+ library(datasets)
+ data("Groceries")
+ inspect(Groceries[1:10])
+ 
+r<-apriori(Groceries, parameter = list(support=0.05,conf=0.1, minlen=2))
+
+bakery<- read.transactions("1000-out1.csv")
+inspect(bakery)
+bakery
+r<-apriori(bakery,parameter = list(support=0.04,conf=0.3,minlen=2))
+inspect(r)
+bakery<-read.transactions("1000i.csv")
+inspect(bakery)
+bakery
+r<-apriori(bakery,parameter = list(support=0.0005,conf=0.1,minlen=2))
+inspect(r)
+data("Adult")
+inspect(Adult[1:10])
+
+======Pract6
+#Use Simple Kmeans, DBScan, Hierachical clustering algorithms for clustering. Compare the performance of clusters by changing the parameters involved in the algorithms.
+
+#K-Means
+library(cluster)
+library(dbscan)
+ir<-iris
+k<-kmeans(ir[1:4], 3)
+clusplot(ir[1:4], k$cluster, labels=2, lines=T)
+hullplot(ir[1,4], k$cluster)
+
+# Agglomerative Hierarchial Clustering
+d<-dist(ir[1:4}, method="eculidian")
+h<-hclust(d, method="single)
+plot(h)
+h1<-hclust(d, method="complete")
+plot(h1)
+h2<-hclust(d, method="average")
+h2=cutree(h2,k=3)#cluster to each sample
+hullplot(ir[1:4], h2)
+
+#DBScan
+d<-dist(ir[1:4], method="euclidean")
+dbc<-dbscan(ir[1:4], eps=0.8, minPts=10)
+dbc<-dbscan(d, eps=0.8, minPts=10)
+clusplot(ir[1:4], dbc$cluster, labels=2, lines=T)
+hullplot(ir[1:4], dbc$cluster)
